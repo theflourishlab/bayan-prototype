@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bayan — a voice-first family companion for premarital genetic screening</title>
+<meta name="description" content="Prototype walkthrough: how Bayan uses the 14-day wait for premarital genetic results to prepare couples and the family elders who shape the decision.">
+<style>
+:root{--bg:#f6f1e7;--card:#fffdf8;--ink:#1d2a2c;--mute:#5f6f70;--line:#e2d9c6;--teal:#0f5c5a;--teal2:#e1efec;--sand:#c98a3b;--sand2:#fbefdc;--red:#a8432f;--red2:#f8e4de;--ok:#2f7a4d;--ok2:#e2f1e6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.2;margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+.sim{background:var(--ink);color:#f3ead8;font-size:13px;text-align:center;padding:6px 16px}
+header{padding:28px 0 12px}
+.brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brand h1{font-size:34px;color:var(--teal)}
+.brand span{color:var(--mute)}
+.lede{max-width:760px;font-size:18px;margin:10px 0 0}
+nav.steps{display:flex;gap:6px;flex-wrap:wrap;margin:22px 0 14px}
+nav.steps button{flex:1 1 150px;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px 12px;cursor:pointer;font:inherit;color:var(--ink)}
+nav.steps button small{display:block;color:var(--mute);font-size:12px}
+nav.steps button[aria-current=true]{background:var(--teal);color:#fff;border-color:var(--teal)}
+nav.steps button[aria-current=true] small{color:#cfe6e2}
+section.scene{display:none;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:16px}
+section.scene.on{display:block}
+.scene h2{font-size:26px;margin-bottom:6px}
+.scene>p.sub{color:var(--mute);max-width:780px;margin:0 0 18px}
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff}
+.card h3{font-size:18px;margin-bottom:8px}
+.tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:99px;background:var(--teal2);color:var(--teal)}
+.tag.s{background:var(--sand2);color:#8a5a18}.tag.r{background:var(--red2);color:var(--red)}.tag.g{background:var(--ok2);color:var(--ok)}
+.phone{border:8px solid #22302f;border-radius:28px;background:#ece5d8;overflow:hidden;display:flex;flex-direction:column;min-height:440px}
+.phone .top{background:#0f5c5a;color:#fff;padding:10px 14px;font-size:14px}
+.phone .top b{display:block}.phone .top small{opacity:.8}
+.chat{padding:12px;display:flex;flex-direction:column;gap:8px;flex:1}
+.b{max-width:88%;padding:8px 11px;border-radius:12px;font-size:14px;background:#fff;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+.b.me{align-self:flex-end;background:#d9f2e6}
+.b cite{font-style:normal;font-size:11px;color:var(--teal);background:var(--teal2);border-radius:4px;padding:0 4px;margin-left:2px;white-space:nowrap}
+.voice{display:flex;align-items:center;gap:8px}
+.play{width:30px;height:30px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:12px;flex:none}
+.wave{flex:1;height:22px;background:repeating-linear-gradient(90deg,var(--teal) 0 2px,transparent 2px 5px);opacity:.55;border-radius:3px;-webkit-mask:linear-gradient(90deg,#000 0 60%,#0006 60%);mask:linear-gradient(90deg,#000 0 60%,#0006 60%)}
+.tr{font-size:12px;color:var(--mute);margin-top:5px;border-top:1px dashed var(--line);padding-top:5px}
+ul.clean{margin:0;padding-left:18px}ul.clean li{margin:4px 0}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.row:last-child{border:0}
+.sw{appearance:none;width:40px;height:22px;border-radius:99px;background:#cfc6b3;position:relative;cursor:pointer;flex:none;transition:.15s}
+.sw:after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.15s}
+.sw:checked{background:var(--teal)}.sw:checked:after{left:20px}
+.qs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.qs button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:7px 14px;cursor:pointer;font:inherit;font-size:14px}
+.qs button.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.pipe{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.pipe .card{position:relative}
+.pipe .n{font-size:12px;color:var(--mute);font-weight:600}
+.claim{font-size:13px;border-left:3px solid var(--teal);padding:4px 8px;margin:6px 0;background:var(--teal2);border-radius:0 6px 6px 0}
+.claim small{display:block;color:var(--mute)}
+.verdict{font-weight:600;padding:8px 10px;border-radius:8px;font-size:14px}
+.verdict.ok{background:var(--ok2);color:var(--ok)}.verdict.esc{background:var(--red2);color:var(--red)}
+.icons{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:300px;margin:10px 0}
+.icons div{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:600;text-align:center;padding:4px}
+.i-a{background:var(--red2);color:var(--red);border:2px solid var(--red)}
+.i-c{background:var(--sand2);color:#8a5a18;border:2px solid var(--sand)}
+.i-n{background:var(--ok2);color:var(--ok);border:2px solid var(--ok)}
+.bar{height:10px;border-radius:99px;background:#eee4d0;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--teal)}
+.bar i.pre{background:var(--sand)}
+.kv{display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-size:14px;align-items:center}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mute)}
+.tablewrap{overflow-x:auto}
+.path{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px}
+.path span{background:var(--teal2);color:var(--teal);padding:5px 10px;border-radius:8px}
+.path span.now{background:var(--teal);color:#fff}
+.path i{color:var(--mute);font-style:normal}
+.ctrl{display:flex;justify-content:space-between;gap:10px;margin:0 0 28px}
+.ctrl button{border:0;background:var(--teal);color:#fff;border-radius:10px;padding:11px 20px;font:inherit;font-weight:600;cursor:pointer}
+.ctrl button.ghost{background:transparent;color:var(--teal);border:1px solid var(--teal)}
+.ctrl button:disabled{opacity:.35;cursor:default}
+.note{font-size:13px;color:var(--mute);margin-top:12px}
+footer{border-top:1px solid var(--line);padding:20px 0 40px;font-size:13px;color:var(--mute)}
+footer a{color:var(--teal)}
+footer h3{font-size:15px;color:var(--ink);margin:14px 0 6px}
+:focus-visible{outline:3px solid var(--sand);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="sim">Prototype simulation · every person, result and number on this page is synthetic · not a medical device</div>
+<div class="wrap">
+<header>
+  <div class="brand"><h1>Bayan</h1><span>Fertility · Challenge 03 · Understanding and Reducing Inherited Disease Risk</span></div>
+  <p class="lede">Abu Dhabi's premarital genetic results take up to 14 days. Today that wait is empty. Bayan uses it to prepare the couple <b>and the family elders who shape the decision</b>, by voice, so that everyone arrives at the counsellor's desk already understanding what a result can and cannot mean.</p>
+</header>
+
+<nav class="steps" id="steps" aria-label="Walkthrough steps"></nav>
+
+<section class="scene" data-t="Day 0|At the clinic">
+  <h2>Day 0 · Enrolment at the blood draw</h2>
+  <p class="sub">Bayan is a layer inside the existing premarital pathway, not another app to download. Each partner scans a code at the clinic and enrols privately on their own phone. The household is the unit: each partner may invite one family decision-maker.</p>
+  <div class="grid g3">
+    <div class="card"><span class="tag">Partner</span><h3>Mariam, 26</h3>
+      <div class="row">Receive lessons as text and voice<input class="sw" type="checkbox" checked aria-label="Mariam lessons"></div>
+      <div class="row">Invite a family elder to the education track<input class="sw" type="checkbox" checked aria-label="Mariam invite elder"></div>
+      <div class="row">Share my quiz progress with the counsellor<input class="sw" type="checkbox" checked aria-label="Mariam share progress"></div>
+      <p class="note">Invited: her father, Abu Mariam (voice only).</p></div>
+    <div class="card"><span class="tag">Partner</span><h3>Khalid, 29</h3>
+      <div class="row">Receive lessons as text and voice<input class="sw" type="checkbox" checked aria-label="Khalid lessons"></div>
+      <div class="row">Invite a family elder to the education track<input class="sw" type="checkbox" checked aria-label="Khalid invite elder"></div>
+      <div class="row">Share my quiz progress with the counsellor<input class="sw" type="checkbox" checked aria-label="Khalid share progress"></div>
+      <p class="note">Invited: his mother, Umm Khalid (voice only).</p></div>
+    <div class="card" style="background:var(--sand2)"><span class="tag s">Family elder</span><h3>Umm Khalid, 63</h3>
+      <ul class="clean">
+        <li>Joins by answering a phone call or a voice message. No reading, no typing, no account.</li>
+        <li>Hears the same lessons as the couple, in Gulf Arabic.</li>
+        <li><b>Never receives anyone's result.</b> The education track carries general knowledge only.</li>
+        <li>Can leave at any time by saying so.</li>
+      </ul></div>
+  </div>
+  <p class="note">Why elders are in the core design: marriages here are family decisions, and a result that only the couple understands is easily overruled or misread at home. Every consent above can be withdrawn and is written to an access log.</p>
+</section>
+
+<section class="scene" data-t="Days 1–13|The wait">
+  <h2>Days 1–13 · Three people, one curriculum</h2>
+  <p class="sub">Short daily lessons arrive before any result exists, so nobody is learning under shock. Each lesson ends with a teach-back question. Every sentence carries the ID of the approved claim it came from.</p>
+  <div class="grid g3">
+    <div class="phone"><div class="top"><b>Bayan · Mariam</b><small>Text and voice · Day 3</small></div><div class="chat">
+      <div class="b">Everyone has two copies of each gene, one from each parent.<cite>C-01</cite></div>
+      <div class="b">A carrier has one copy that works and one that does not, and is usually healthy.<cite>C-02</cite> Being a carrier is common and is nobody's fault.<cite>C-03</cite></div>
+      <div class="b">Quick check: if only one of you is a carrier for a condition, can your child have that condition?</div>
+      <div class="b me">No, both of us would need to carry it in the same gene.</div>
+      <div class="b">That's right.<cite>C-04</cite> Tomorrow: what "1 in 4" really means.</div>
+    </div></div>
+    <div class="phone"><div class="top"><b>Bayan · Khalid</b><small>Text and voice · Day 3</small></div><div class="chat">
+      <div class="b">A carrier has one copy that works and one that does not, and is usually healthy.<cite>C-02</cite></div>
+      <div class="b">Quick check: does being a carrier mean you are ill?</div>
+      <div class="b me">I think it means I have a mild form of the disease?</div>
+      <div class="b">Not quite, and many people think so. A carrier is usually healthy and has no form of the condition.<cite>C-02</cite> Let me explain it another way, with a picture.</div>
+      <div class="b me">Will the test tell us if we should marry?</div>
+      <div class="b">That is a question for you both and your counsellor, not for me. I've added it to the list for your appointment.<cite>ESC</cite></div>
+    </div></div>
+    <div class="phone"><div class="top" style="background:#8a5a18"><b>Bayan · Umm Khalid</b><small>Voice only · Gulf Arabic · Day 3</small></div><div class="chat">
+      <div class="b"><div class="voice"><span class="play">▶</span><span class="wave"></span><small>1:40</small></div>
+        <div class="tr">Transcript (translated): "Peace be upon you, Umm Khalid. Today, one idea. A person can carry a hidden trait and be completely healthy. It is common in every family…" <cite>C-02</cite><cite>C-03</cite></div></div>
+      <div class="b"><div class="voice"><span class="play">▶</span><span class="wave"></span><small>0:20</small></div>
+        <div class="tr">"One question for you. If the test finds Khalid is a carrier, does that mean he is sick?"</div></div>
+      <div class="b me"><div class="voice"><span class="play">▶</span><span class="wave"></span><small>0:12</small></div>
+        <div class="tr">"No. He is healthy, it is only something he carries."</div></div>
+      <div class="b"><div class="voice"><span class="play">▶</span><span class="wave"></span><small>0:15</small></div>
+        <div class="tr">"Exactly right. I will call again tomorrow at the same time."</div></div>
+    </div></div>
+  </div>
+  <p class="note">In production the voice track is spoken in Gulf Arabic and reviewed by native speakers. Transcripts are shown in English here for judges.</p>
+</section>
+
+<section class="scene" data-t="Under the hood|How answers are built">
+  <h2>How every answer is built, and why it can be audited</h2>
+  <p class="sub">The model never writes freely and never calculates. It can only select and simplify claims from a clinician-approved library. A checker rejects any sentence that does not trace to a claim. Anything else is handed to a human. Pick a question:</p>
+  <div class="qs" id="qs"></div>
+  <div class="pipe">
+    <div class="card"><div class="n">1 · QUESTION</div><p id="p-q" style="margin:6px 0 0"></p></div>
+    <div class="card"><div class="n">2 · APPROVED CLAIMS RETRIEVED</div><div id="p-c"></div></div>
+    <div class="card"><div class="n">3 · ANSWER COMPOSED</div><p id="p-a" style="margin:6px 0 0;font-size:14px"></p></div>
+    <div class="card"><div class="n">4 · CHECKER</div><div id="p-v" style="margin-top:6px"></div><p class="note" id="p-n"></p></div>
+  </div>
+</section>
+
+<section class="scene" data-t="Day 14|The result">
+  <h2>Day 14 · The result comes from a person</h2>
+  <p class="sub">Bayan never delivers a result. The physician privileged in genetic counselling does, as the Department of Health standard requires. Bayan supplies the picture, the numbers computed by code, and the privacy controls.</p>
+  <div class="grid g2">
+    <div class="card"><span class="tag r">Synthetic result</span><h3>Both partners carry a variant in the same gene</h3>
+      <p style="margin:6px 0">For each pregnancy, out of 4 possible outcomes:</p>
+      <div class="icons"><div class="i-a">has the condition</div><div class="i-c">healthy carrier</div><div class="i-c">healthy carrier</div><div class="i-n">not a carrier</div></div>
+      <p style="font-size:14px;margin:0"><b>1 in 4</b> chance of a child with the condition, <b>2 in 4</b> a healthy carrier, <b>1 in 4</b> neither. The chance is the same for every pregnancy.<cite style="font-style:normal;font-size:11px;color:var(--teal)"> C-05</cite></p>
+      <p class="note">This is a chance for future children, not a diagnosis of either of you. The counsellor will explain the options available to you. The decision is yours.</p></div>
+    <div class="card"><span class="tag">Mariam's privacy controls</span><h3>Who can see what</h3>
+      <div class="row">My partner sees our shared couple result<input class="sw" type="checkbox" checked aria-label="Partner sees couple result"></div>
+      <div class="row">My partner sees my other carrier findings<input class="sw" type="checkbox" aria-label="Partner sees other findings"></div>
+      <div class="row">My invited elder sees any result<input class="sw" type="checkbox" aria-label="Elder sees result"></div>
+      <div class="row">Counsellor may brief my elder, with me present<input class="sw" type="checkbox" aria-label="Counsellor briefs elder"></div>
+      <p class="note">Family sharing is off by default. Every change is recorded in an access log the individual can read.</p>
+      <h3 style="margin-top:14px">A "compatible" result is also explained honestly</h3>
+      <p style="font-size:14px;margin:6px 0 0">"The test looked at 570 genes and found no shared variant. That lowers the chance. It does not make it zero, because no test sees every gene or every variant."<cite style="font-style:normal;font-size:11px;color:var(--teal)"> C-06</cite></p></div>
+  </div>
+</section>
+
+<section class="scene" data-t="Day 14|Counsellor brief">
+  <h2>The counsellor starts the session already knowing the room</h2>
+  <p class="sub">Counselling time is scarce. The brief shows what each person, including the elders, understood during the wait, and the questions they asked in their own words.</p>
+  <div class="grid g2">
+    <div class="card"><span class="tag r">Priority P1 · shared variant</span><h3>Couple #A-1042 (synthetic)</h3>
+      <div class="kv" style="margin-top:8px">
+        <span>Mariam · teach-back 3/6 → 6/6</span><span>100%</span><div class="bar" style="grid-column:1/-1"><i style="width:100%"></i></div>
+        <span>Khalid · teach-back 2/6 → 5/6</span><span>83%</span><div class="bar" style="grid-column:1/-1"><i style="width:83%"></i></div>
+        <span>Umm Khalid (voice) · 1/6 → 5/6</span><span>83%</span><div class="bar" style="grid-column:1/-1"><i style="width:83%"></i></div>
+        <span>Abu Mariam (voice) · 2/6 → 4/6</span><span>67%</span><div class="bar" style="grid-column:1/-1"><i style="width:67%"></i></div>
+      </div>
+      <p class="note">Still unclear for Abu Mariam: "1 in 4 applies to every pregnancy, not to one child in four."</p></div>
+    <div class="card"><h3>Questions held for you</h3>
+      <ul class="clean">
+        <li>Khalid: "Will the test tell us if we should marry?"</li>
+        <li>Mariam: "What are our options if we want children?"</li>
+        <li>Umm Khalid (voice): "Is this because they are cousins?"</li>
+      </ul>
+      <h3 style="margin-top:14px">Traceable pathway</h3>
+      <div class="path"><span>Result ready</span><i>→</i><span class="now">Counselling · booked, day 15</span><i>→</i><span>Confirmatory test</span><i>→</i><span>Reproductive genomics service</span></div>
+      <p class="note">Each step is timestamped. A couple may decline any step, and declining is recorded as a valid outcome, not a failure.</p></div>
+  </div>
+</section>
+
+<section class="scene" data-t="For the health system|Metrics">
+  <h2>What the health system can verify</h2>
+  <p class="sub">Every measure below can be re-run by an evaluator. Values are targets for a pilot, shown with synthetic sample figures. Cancelled marriages are deliberately not measured.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Measure</th><th>How it is checked</th><th>Pilot target</th><th>Synthetic demo</th></tr>
+    <tr><td>Numeric exactness</td><td>Every number is produced by code and compared with the answer text</td><td>100%</td><td>100%</td></tr>
+    <tr><td>Sentence traceability</td><td>Share of sentences linked to an approved claim ID</td><td>100%</td><td>100%</td></tr>
+    <tr><td>Accuracy on gold questions</td><td>Clinician-written question set, scored blind</td><td>≥ 95%</td><td>to be run</td></tr>
+    <tr><td>Escalation recall</td><td>Questions that must go to a human, and did</td><td>≥ 98%</td><td>to be run</td></tr>
+    <tr><td>Comprehension gain</td><td>Teach-back score, day 1 versus day 13</td><td>+2 of 6</td><td>+3.0</td></tr>
+    <tr><td>Elder completion</td><td>Invited elders who finish the voice track</td><td>≥ 60%</td><td>2 of 2</td></tr>
+    <tr><td>Voice and text parity</td><td>Comprehension gap between voice-only and text users</td><td>≤ 10 points</td><td>8 points</td></tr>
+    <tr><td>Time to counselling</td><td>Days from result ready to first session</td><td>≤ 3 days</td><td>1 day</td></tr>
+    <tr><td>Privacy</td><td>Results disclosed without recorded consent</td><td>0</td><td>0</td></tr>
+  </table></div>
+</section>
+
+<div class="ctrl"><button class="ghost" id="prev">← Back</button><button id="next">Next →</button></div>
+
+<footer>
+  <h3>Assumptions and limitations</h3>
+  <p>This is a scripted mock with no live model and no real data. The claim library shown is a sample and has not been clinically reviewed. How Abu Dhabi delivers results digitally is not confirmed, so the integration point is an assumption. Faith-based content is intentionally out of scope.</p>
+  <h3>Sources behind the design</h3>
+  <p><a href="https://www.doh.gov.ae/-/media/Feature/Resources/Standards/Premarital-Screening-standard-for-publication.ashx">DoH Abu Dhabi Premarital Screening Standard</a> · <a href="https://m42.ae/media/irlib1qa/premarital-screening-enabled-by-the-emirati-genome-program.pdf">M42: premarital screening and the Emirati Genome Program</a> · <a href="https://www.adphc.gov.ae/en/Public-Health-Programs/Premarital-Screening">ADPHC premarital screening</a> · <a href="https://www.genomeweb.com/molecular-diagnostics/mandatory-premarital-genetic-carrier-screening-program-dubai-ids-risk-couples">Dubai citywide premarital screening study</a> · <a href="https://link.springer.com/10.1186/s12889-024-19029-0">Saudi premarital screening outcomes</a> · <a href="https://www.healio.com/news/hematology-oncology/20241017/chatbot-comparable-with-counseling-for-helping-patients-with-genetic-testing-decisions">BRIDGE chatbot trial</a> · <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9731905/">Icon arrays in genetic risk communication</a></p>
+</footer>
+</div>
+
+<script>
+const scenes=[...document.querySelectorAll('.scene')],steps=document.getElementById('steps');let cur=0;
+scenes.forEach((s,i)=>{const [a,b]=s.dataset.t.split('|');const btn=document.createElement('button');btn.innerHTML=`<small>${a}</small>${b}`;btn.onclick=()=>go(i);steps.appendChild(btn)});
+function go(i){cur=Math.max(0,Math.min(scenes.length-1,i));scenes.forEach((s,k)=>s.classList.toggle('on',k===cur));[...steps.children].forEach((b,k)=>b.setAttribute('aria-current',k===cur));document.getElementById('prev').disabled=cur===0;document.getElementById('next').disabled=cur===scenes.length-1}
+document.getElementById('prev').onclick=()=>go(cur-1);document.getElementById('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(e.key==='ArrowRight')go(cur+1);if(e.key==='ArrowLeft')go(cur-1)});
+const L={
+ 'C-02':['A carrier has one working and one non-working copy of a gene and is usually healthy.','Clinical carrier-screening guidance'],
+ 'C-04':['A child can have a recessive condition only if both parents carry a variant in the same gene.','Clinical carrier-screening guidance'],
+ 'C-05':['When both parents carry a variant in the same gene, each pregnancy has a 1 in 4 chance of an affected child, 2 in 4 of a healthy carrier and 1 in 4 of neither.','Mendelian inheritance · computed by code'],
+ 'C-06':['A result with no shared variant lowers the chance but does not remove it; the Abu Dhabi panel covers 570 genes.','DoH Abu Dhabi programme description'],
+ 'C-07':['Relatives share more of their genes, so they are more likely to carry the same rare variant.','Clinical genetics references']};
+const Q=[
+ {q:'"We are both carriers. Will our first child be sick?"',c:['C-05'],a:'Not necessarily. Each pregnancy has a 1 in 4 chance of a child with the condition. The chance is the same every time, for the first child and for every child after. <b>[C-05]</b>',ok:1,n:'Number 1 in 4 matched against the code-computed value. Every sentence traced.'},
+ {q:'"The test says compatible. So our children are safe?"',c:['C-06'],a:'The test found no shared variant across 570 genes, which lowers the chance. It does not make it zero, because no test sees every gene or every variant. <b>[C-06]</b>',ok:1,n:'No reassurance beyond the approved claim. Every sentence traced.'},
+ {q:'"Is this happening because we are cousins?"',c:['C-07','C-04'],a:'Relatives share more of their genes, so cousins are more likely to carry the same rare variant. A child is affected only when both parents carry a variant in the same gene. This is about chance, not blame. <b>[C-07] [C-04]</b>',ok:1,n:'Neutral wording check passed: no judgement of the marriage.'},
+ {q:'"Should we cancel the wedding?"',c:[],a:'<i>No answer composed.</i> "That decision belongs to you both. I can\'t advise on it, but your counsellor can talk it through with you. I\'ve added your question to your appointment."',ok:0,n:'No approved claim covers a personal decision. Fixed handover message sent; question added to the counsellor brief.'},
+ {q:'"The report mentions a variant of uncertain significance. What do I do?"',c:[],a:'<i>No answer composed.</i> "This needs a genetics professional. I\'ve flagged it for your counsellor as a priority."',ok:0,n:'Ambiguous finding: always escalated, never explained by the model.'}];
+const qs=document.getElementById('qs');
+Q.forEach((x,i)=>{const b=document.createElement('button');b.textContent=x.q.replace(/"/g,'');b.onclick=()=>pick(i);qs.appendChild(b)});
+function pick(i){const x=Q[i];[...qs.children].forEach((b,k)=>b.classList.toggle('on',k===i));
+ document.getElementById('p-q').textContent=x.q;
+ document.getElementById('p-c').innerHTML=x.c.length?x.c.map(id=>`<div class="claim"><b>${id}</b> ${L[id][0]}<small>Source: ${L[id][1]}</small></div>`).join(''):'<p class="note">No matching approved claim.</p>';
+ document.getElementById('p-a').innerHTML=x.a;
+ document.getElementById('p-v').innerHTML=x.ok?'<div class="verdict ok">✓ Passed · sent to user</div>':'<div class="verdict esc">↑ Escalated to counsellor</div>';
+ document.getElementById('p-n').textContent=x.n}
+pick(0);go(0);
+</script>
+</body>
+</html>
